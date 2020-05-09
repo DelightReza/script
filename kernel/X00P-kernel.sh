@@ -21,9 +21,7 @@ CROSS_COMPILE+="$PWD/aarch64-linux-android-4.9/bin/aarch64-linux-android-"
 # Modules environtment
 OUTDIR="$PWD/out/"
 SRCDIR="$PWD/"
-MODULEDIR="$PWD/AnyKernel3/modules/system/lib/modules/"
-PRIMA="$PWD/AnyKernel3/modules/vendor/lib/modules/wlan.ko"
-PRONTO="$PWD/AnyKernel3/modules/vendor/lib/modules/pronto/pronto_wlan.ko"
+MODULEDIR="$PWD/AnyKernel3/modules/vendor/lib/modules/"
 STRIP="$PWD/aarch64-linux-android-4.9/bin/$(echo "$(find "$PWD/aarch64-linux-android-4.9/bin" -type f -name "aarch64-*-gcc")" | awk -F '/' '{print $NF}' |\
 			sed -e 's/gcc/strip/')"
 
@@ -56,7 +54,7 @@ while true; do
 
 	if [ "$choice" == "1" ]; then
 		echo -e "\n(i) Cloning toolcahins if folder not exist..."
-		git clone https://github.com/raza231198/aarch64-linux-android-4.9
+		git clone https://github.com/raza231198/aarch64-linux-android-4.9 aarch64-linux-android-4.9
 		echo -e ""
 		make  O=out $CONFIG $THREAD &>/dev/null
 		make  O=out $THREAD & pid=$!
@@ -126,33 +124,30 @@ while true; do
 	if [ "$choice" == "4" ]; then
 		echo -e "\n#######################################################################"
         echo -e "\n(i) Cloning AnyKernel3 if folder not exist..."
-		git clone https://github.com/raza231198/AnyKernel3
-		echo -e "\n(i) Strip and move modules to AnyKernel3..."
-
-		# thanks to @adekmaulana
+		git clone https://github.com/raza231198/AnyKernel3 AnyKernel3
 
 		cd $ZIP_DIR
 		make clean &>/dev/null
-		cd ..
+		cd $PWD
 
-		for MOD in $(find "${OUTDIR}" -name '*.ko') ; do
+	if [ $(find "${OUTDIR}" -name 'wlan.ko') ]; then
+		echo -e "\n(i) Strip and move modules to AnyKernel3..."
+		# thanks to @adekmaulana
+
+		for MOD in $(find "${OUTDIR}" -name 'wlan.ko') ; do
 			"${STRIP}" --strip-unneeded --strip-debug "${MOD}" &> /dev/null
 			"${SRCDIR}"/scripts/sign-file sha512 \
 					"${OUTDIR}/signing_key.priv" \
 					"${OUTDIR}/signing_key.x509" \
 					"${MOD}"
-			find "${OUTDIR}" -name '*.ko' -exec cp {} "${MODULEDIR}" \;
-			case ${MOD} in
-				*/wlan.ko)
-					cp -ar "${MOD}" "${PRIMA}"
-					cp -ar "${MOD}" "${PRONTO}"
-			esac
+			find "${OUTDIR}" -name 'wlan.ko' -exec cp {} "${MODULEDIR}" \;
 		done
 		echo -e "\n(i) Done moving modules"
+	fi
 
-		rm $PWD/AnyKernel3/modules/system/lib/modules/wlan.ko
+        echo -e "\n(i) Making ZiP"
 		cd $ZIP_DIR
-		cp $KERN_IMG $ZIP_DIR/zImage
+		cp $KERN_IMG $ZIP_DIR
 		make normal &>/dev/null
 		cd ..
 
