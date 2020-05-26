@@ -6,8 +6,8 @@ jobs:
    environment:
       GIT_EMAIL: 'raza231198@gmail.com'
       GIT_NAME: 'MD RAZA'
-      VERSION: '2.9.0'
-      PBRP_MANIFEST: 'android-9.0'
+      VERSION: '2.3'
+      SHRP_MANIFEST: 'android-9.0'
       VENDOR: 'asus'
       DEVICE: 'X00P'
    steps:
@@ -23,7 +23,7 @@ jobs:
            git config --global user.email "${GIT_EMAIL}"
            git config --global user.name "{GIT_NAME}"
            git config --global color.ui false
-           repo init --depth=1 -u git://github.com/PitchBlackRecoveryProject/manifest_pb.git -b ${PBRP_MANIFEST}
+           repo init --depth=1 -u git://github.com/SKYHAWK-Recovery-Project/platform_manifest_twrp_omni.git -b ${SHRP_MANIFEST}
            repo sync -j$(nproc --all) --force-sync --no-tags --no-clone-bundle --prune --optimized-fetch
            git clone https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} -b ${CIRCLE_BRANCH} device/${VENDOR}/${DEVICE}
            export ALLOW_MISSING_DEPENDENCIES=true
@@ -31,13 +31,13 @@ jobs:
            source build/envsetup.sh
            lunch omni_${DEVICE}-eng
            mka recoveryimage -j$(nproc --all)
-           export BUILDFILE=$(find $(pwd)/out/target/product/${DEVICE}/PitchBlack*.zip 2>/dev/null)
+           export BUILDFILE=$(find $(pwd)/out/target/product/${DEVICE}/SHRP*.zip 2>/dev/null)
            export BUILDFILE_IMG=$(find $(pwd)/out/target/product/${DEVICE}/recovery.img 2>/dev/null)
            export UPLOAD_PATH=$(pwd)/out/target/product/${DEVICE}/upload/
            mkdir ${UPLOAD_PATH}
            cp $BUILDFILE $UPLOAD_PATH
            cp $BUILDFILE_IMG $UPLOAD_PATH
-           ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -n "Latest Release for $(echo $DEVICE)" -b "PBRP $(echo $VERSION)" -c ${CIRCLE_SHA1} -delete ${VERSION} ${UPLOAD_PATH}
+           ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -n "Latest Release for $(echo $DEVICE)" -b "SHRP $(echo $VERSION)" -c ${CIRCLE_SHA1} -delete ${VERSION} ${UPLOAD_PATH}
 workflows:
   version: 2.1
   cooking:
