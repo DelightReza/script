@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  compile:
+  build:
    docker:
       - image: ubuntu:18.04
    environment:
@@ -40,4 +40,5 @@ workflows:
   version: 2.1
   cooking:
     jobs:
-      - compile
+      - build:
+          context: raza
