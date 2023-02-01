@@ -54,7 +54,7 @@ while true; do
 
 	if [ "$choice" == "1" ]; then
 		echo -e "\n(i) Cloning toolcahins if folder not exist..."
-		git clone https://github.com/raza231198/aarch64-linux-android-4.9 aarch64-linux-android-4.9
+		git clone https://github.com/RazaDroid/aarch64-linux-android-4.9 aarch64-linux-android-4.9
 		echo -e ""
 		make  O=out $CONFIG $THREAD &>/dev/null
 		make  O=out $THREAD & pid=$!
@@ -124,7 +124,7 @@ while true; do
 	if [ "$choice" == "4" ]; then
 		echo -e "\n#######################################################################"
         echo -e "\n(i) Cloning AnyKernel3 if folder not exist..."
-		git clone https://github.com/raza231198/AnyKernel3 AnyKernel3
+		git clone https://github.com/RazaDroid/AnyKernel3 AnyKernel3
 
 		cd $ZIP_DIR
 		make clean &>/dev/null
