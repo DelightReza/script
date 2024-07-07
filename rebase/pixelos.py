@@ -41,7 +41,7 @@ pixelos = [
 # Cloning repositories, rebasing and pushing
 for repo in pixelos:
     if os.path.exists(repo["local_path"]):
-        os.system(f"cd {repo['local_path']} && git fetch {repo['upstream_url']} {repo['upstream_branch']} && git rebase FETCH_HEAD && git push {repo['remote_url']} --force {repo['remote_branch']}")
+        os.system(f"cd {repo['local_path']} && git fetch {repo['upstream_url']} {repo['upstream_branch']} && git rebase FETCH_HEAD && git push {repo['remote_url']} --force {repo['remote_branch']} && cd .. && rm -rf {repo['local_path']}")
     else:
         os.system(f"git clone {repo['remote_url']} -b {repo['remote_branch']} {repo['local_path']}")
-        os.system(f"cd {repo['local_path']} && git fetch {repo['upstream_url']} {repo['upstream_branch']} && git rebase FETCH_HEAD && git push {repo['remote_url']} --force {repo['remote_branch']}")
+        os.system(f"cd {repo['local_path']} && git fetch {repo['upstream_url']} {repo['upstream_branch']} && git rebase FETCH_HEAD && git push {repo['remote_url']} --force {repo['remote_branch']} && cd .. && rm -rf {repo['local_path']}")
